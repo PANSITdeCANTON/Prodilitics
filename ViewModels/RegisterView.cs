@@ -1,27 +1,3 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Productivity_Analytics.ViewModels
-{
-    public class RegisterView
-
-    {
-        [Required(ErrorMessage ="UserName is required.")]
-        public required string UserName { get; set; }
-
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress]
-        public required string Email { get; set; }
-
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(40, MinimumLength = 8, ErrorMessage = "The {0} must be at {2} and at max {1} characters long.")]
-        [DataType(DataType.Password)]
-        [Compare("ConfirmPassword", ErrorMessage = "Password does not match.")]
-        public required string Password { get; set; }
-
-        [Required(ErrorMessage = "Confirm Password is required.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm Password")]
-        public required string ConfirmPassword { get; set; }
-
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:c09bef87f9c7c7d6e46bd33d6541a98965d9ba4b64307f8f0b05b59e5299b8e4
+size 947

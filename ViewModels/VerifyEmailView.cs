@@ -1,11 +1,3 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Productivity_Analytics.ViewModels
-{
-    public class VerifyEmailView
-    {
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress]
-        public required string Email { get; set; }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:9260646de411e6eb8ce8bc34404bcfd687463ef71509456ebae0fb6d1d50f2b9
+size 272

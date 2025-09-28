@@ -1,17 +1,3 @@
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\bin\Debug\net8.0-windows\Productivity Analytics.exe
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\bin\Debug\net8.0-windows\Productivity Analytics.deps.json
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\bin\Debug\net8.0-windows\Productivity Analytics.runtimeconfig.json
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\bin\Debug\net8.0-windows\Productivity Analytics.dll
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\bin\Debug\net8.0-windows\Productivity Analytics.pdb
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity_Analytics.LoginForm.resources
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity_Analytics.Properties.Resources.resources
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.csproj.GenerateResource.cache
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.AssemblyInfoInputs.cache
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.AssemblyInfo.cs
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.csproj.CoreCompileInputs.cache
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.dll
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\refint\Productivity Analytics.dll
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.pdb
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\Productivity Analytics.genruntimeconfig.cache
-C:\Users\User\source\repos\Productivity Analytics\Productivity Analytics\obj\Debug\net8.0-windows\ref\Productivity Analytics.dll
+version https://git-lfs.github.com/spec/v1
+oid sha256:ed2988d17178c865582b0680a6f31dd39989693380dda961adb648940f476d67
+size 2360

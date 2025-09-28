@@ -1,32 +1,3 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Productivity_Analytics.Controllers
-{
-    public class DashboardController : Controller
-    {
-        public IActionResult Dashboard()
-        {
-            return View(); // Views/Dashboard/Dashboard.cshtml
-        }
-
-        public IActionResult Chart()
-        {
-            return View(); // Views/Dashboard/Chart.cshtml
-        }
-
-        public IActionResult Tables()
-        {
-            return View(); // Views/Dashboard/Tables.cshtml
-        }
-
-        public IActionResult sidenav()
-        {
-            return View(); // Views/Dashboard/sidenav.cshtml
-        }
-
-        public IActionResult Static()
-        {
-            return View(); // Views/Dashboard/Static.cshtml
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ad6072625bc6b0147f2cf1bd3efcf615bb348aba49719f4a6a0d4aa50f76a6e0
+size 779
