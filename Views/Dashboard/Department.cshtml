@@ -1,0 +1,63 @@
+﻿@model Productivity_Analytics.Models.Department
+@{
+    ViewData["Title"] = "Department";
+    Layout = "~/Views/Shared/_DepartmentLayout.cshtml";
+}
+
+
+<div class="mb-3">
+    <form asp-action="Department" asp-controller="Dashboard" method="get" class="d-flex">
+        <label class="me-2">Select Department:</label>
+        <select name="id" class="form-select w-auto me-2">
+            @foreach (var dept in ViewBag.Departments as List<Productivity_Analytics.Models.Department>)
+            {
+                <option value="@dept.DepartmentId" 
+                 selected="@(dept.DepartmentId == Model.DepartmentId ? "selected" : null)">
+                 @dept.DepartmentName
+                </option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary">View</button>
+    </form>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-users me-1"></i>
+        Employees in @Model.DepartmentName
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Years of Experience</th>
+                    <th>Education Level</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Employees != null && Model.Employees.Any())
+                {
+                    foreach (var emp in Model.Employees)
+                    {
+                        <tr>
+                            <td>@emp.Name</td>
+                            <td>@emp.Age</td>
+                            <td>@emp.YearsOfExperience</td>
+                            <td>@emp.EducationLevel</td>
+                            <td>@(emp.Rating ?? "No Rating")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">No employees in this department.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

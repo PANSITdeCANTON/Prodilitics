@@ -1,0 +1,180 @@
+﻿@model Productivity_Analytics.Models.Project
+@{
+    Layout = "~/Views/Shared/_layout-static.cshtml";
+}
+
+<h1 class="mt-4">Project Settings</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Productivity Analytics</li>
+</ol>
+
+<!-- Project Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-cogs me-1"></i>
+        Add / Edit Project
+    </div>
+    <div class="card-body">
+        <form asp-action="SaveProject" asp-controller="Dashboard" method="post">
+            <input type="hidden" name="ProjectId" value="@Model?.ProjectId" />
+
+            <div class="mb-3">
+                <label class="form-label">Project Name</label>
+                <input type="text" name="ProjectName" class="form-control" 
+                       value="@Model?.ProjectName" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Start Date</label>
+                <input type="date" name="StartDate" class="form-control"
+                       value="@(Model?.StartDate.ToString("yyyy-MM-dd"))" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Due Date</label>
+                <input type="date" name="DueDate" class="form-control"
+                       value="@(Model?.DueDate.ToString("yyyy-MM-dd"))" required />
+            </div>
+
+            <div class="mb-3">
+    <label class="form-label">Departments</label>
+    <select name="DepartmentIds" class="form-select" multiple>
+        @foreach (var dept in ViewBag.Departments as List<Productivity_Analytics.Models.Department>)
+        {
+            if (Model?.ProjectDepartments?.Any(pd => pd.DepartmentId == dept.DepartmentId) == true)
+            {
+                <option value="@dept.DepartmentId" selected="selected">@dept.DepartmentName</option>
+            }
+            else
+            {
+                <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+            }
+        }
+    </select>
+    <small class="form-text text-muted">Hold CTRL to select multiple</small>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Employees</label>
+    <select name="EmployeeIds" class="form-select" multiple>
+        @foreach (var emp in ViewBag.Employees as List<Productivity_Analytics.Models.Employee>)
+        {
+            if (Model?.ProjectEmployees?.Any(pe => pe.EmployeeId == emp.Id) == true)
+            {
+                <option value="@emp.Id" selected="selected">@emp.Name</option>
+            }
+            else
+            {
+                <option value="@emp.Id">@emp.Name</option>
+            }
+        }
+    </select>
+</div>
+
+            <div class="mb-3">
+                <label class="form-label">Project Rating</label>
+                <select name="ProjectRating" class="form-select">
+                    @if (string.IsNullOrEmpty(Model?.ProjectRating))
+                    {
+                        <option value="" selected>No Rating</option>
+                    }
+                    else
+                    {
+                        <option value="">No Rating</option>
+                    }
+
+                    @if (Model?.ProjectRating == "Excellent")
+                    {
+                        <option value="Excellent" selected>Excellent</option>
+                    }
+                    else
+                    {
+                        <option value="Excellent">Excellent</option>
+                    }
+
+                    @if (Model?.ProjectRating == "Very Good")
+                    {
+                        <option value="Very Good" selected>Very Good</option>
+                    }
+                    else
+                    {
+                        <option value="Very Good">Very Good</option>
+                    }
+
+                    @if (Model?.ProjectRating == "Good")
+                    {
+                        <option value="Good" selected>Good</option>
+                    }
+                    else
+                    {
+                        <option value="Good">Good</option>
+                    }
+
+                    @if (Model?.ProjectRating == "Needs Improvement")
+                    {
+                        <option value="Needs Improvement" selected>Needs Improvement</option>
+                    }
+                    else
+                    {
+                        <option value="Needs Improvement">Needs Improvement</option>
+                    }
+
+                    @if (Model?.ProjectRating == "Poor")
+                    {
+                        <option value="Poor" selected>Poor</option>
+                    }
+                    else
+                    {
+                        <option value="Poor">Poor</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="IsComplete"
+                       value="true" @(Model?.IsComplete == true ? "checked=\"checked\"" : "") />
+                <label class="form-check-label">Completed</label>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Employees inside project -->
+@if (Model != null && Model.ProjectId > 0)
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-users me-1"></i>
+            Employees in @Model.ProjectName
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Employee Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ProjectEmployees != null && Model.ProjectEmployees.Any())
+                    {
+                        foreach (var pe in Model.ProjectEmployees)
+                        {
+                            <tr>
+                                <td>@pe.Employee?.Name</td>
+                                <td>@pe.Employee?.Department?.DepartmentName</td>
+                                <td>@(pe.EmployeeRating ?? "No Rating")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3">No employees in this project.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
