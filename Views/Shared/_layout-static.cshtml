@@ -1,4 +1,4 @@
-﻿@RenderBody()
+﻿
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Static Navigation - SB Admin</title>
+    <title>Project Table - SB Admin</title>
     <link href="~/css/dashboard.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -117,7 +117,16 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                  @RenderBody()
+                    <h1 class="mt-4">Project</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a asp-controller="Dashboard" asp-action="Dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Department</li>
+                    </ol>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            @RenderBody()
+                        </div>
+                    </div>
                 </div>
             </main>
             <footer class="py-4 bg-light mt-auto">

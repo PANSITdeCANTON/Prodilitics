@@ -1,18 +1,98 @@
 ﻿@model Productivity_Analytics.Models.Project
 @{
+    ViewData["Title"] = "Projects";
     Layout = "~/Views/Shared/_layout-static.cshtml";
 }
 
-<h1 class="mt-4">Project Settings</h1>
-<ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active">Productivity Analytics</li>
-</ol>
+<!-- Project List -->
+<div id="projectTableSection" class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-folder-open me-1"></i> Project List</span>
+        <button type="button" class="btn btn-primary btn-sm" onclick="showProjectForm()">
+            <i class="fas fa-plus"></i> Add Project
+        </button>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Project Name</th>
+                    <th>Start Date</th>
+                    <th>Due Date</th>
+                    <th>Departments</th>
+                    <th>Employees</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.Projects != null && ((IEnumerable<Productivity_Analytics.Models.Project>)ViewBag.Projects).Any())
+                {
+                    foreach (var project in (IEnumerable<Productivity_Analytics.Models.Project>)ViewBag.Projects)
+                    {
+                        <tr>
+                            <td>@project.ProjectName</td>
+                            <td>@project.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@project.DueDate.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @if (project.ProjectDepartments != null && project.ProjectDepartments.Any())
+                                {
+                                    @string.Join(", ", project.ProjectDepartments.Select(pd => pd.Department.DepartmentName))
+                                }
+                                else
+                                {
+                                    @:No Department
+                                }
+                            </td>
+                            <td>
+                                @if (project.ProjectEmployees != null && project.ProjectEmployees.Any())
+                                {
+                                    @string.Join(", ", project.ProjectEmployees.Select(pe => pe.Employee.Name))
+                                }
+                                else
+                                {
+                                    @:No Employees
+                                }
+                            </td>
+                            <td>@(project.ProjectRating ?? "No Rating")</td>
+                            <td>
+                                @if (project.IsComplete)
+                                {
+                                    <span class="badge bg-success">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Ongoing</span>
+                                }
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-warning"
+                                        onclick="openEditModal(@project.ProjectId)">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">No projects found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<!-- Project Form -->
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-cogs me-1"></i>
-        Add / Edit Project
+<!-- Project Form (Initially Hidden) -->
+<div id="projectFormSection" class="card mb-4" style="display:none;">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-plus me-1"></i> Add Project</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="showProjectTable()">
+            <i class="fas fa-arrow-left"></i> Back to Projects
+        </button>
     </div>
     <div class="card-body">
         <form asp-action="SaveProject" asp-controller="Dashboard" method="post">
@@ -20,161 +100,175 @@
 
             <div class="mb-3">
                 <label class="form-label">Project Name</label>
-                <input type="text" name="ProjectName" class="form-control" 
+                <input type="text" name="ProjectName" class="form-control"
                        value="@Model?.ProjectName" required />
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Start Date</label>
-                <input type="date" name="StartDate" class="form-control"
-                       value="@(Model?.StartDate.ToString("yyyy-MM-dd"))" required />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Due Date</label>
+                <label class="form-label">Start Date (dd-mm-yy) </label>
                 <input type="date" name="DueDate" class="form-control"
-                       value="@(Model?.DueDate.ToString("yyyy-MM-dd"))" required />
+                       value="@(Model?.DueDate != default(DateTime)
+                                        ? Model.DueDate.ToString("yyyy-MM-dd")
+                                        : DateTime.Today.ToString("yyyy-MM-dd"))" required />
+
             </div>
 
             <div class="mb-3">
-    <label class="form-label">Departments</label>
-    <select name="DepartmentIds" class="form-select" multiple>
-        @foreach (var dept in ViewBag.Departments as List<Productivity_Analytics.Models.Department>)
-        {
-            if (Model?.ProjectDepartments?.Any(pd => pd.DepartmentId == dept.DepartmentId) == true)
-            {
-                <option value="@dept.DepartmentId" selected="selected">@dept.DepartmentName</option>
-            }
-            else
-            {
-                <option value="@dept.DepartmentId">@dept.DepartmentName</option>
-            }
-        }
-    </select>
-    <small class="form-text text-muted">Hold CTRL to select multiple</small>
-</div>
+                <label class="form-label">Due Date (dd-mm-yy)</label>
+                <input type="date" name="DueDate" class="form-control"
+                       value="@(Model?.DueDate != default(DateTime)
+                                        ? Model.DueDate.ToString("yyyy-MM-dd")
+                                        : DateTime.Today.ToString("yyyy-MM-dd"))" required />
 
-<div class="mb-3">
-    <label class="form-label">Employees</label>
-    <select name="EmployeeIds" class="form-select" multiple>
-        @foreach (var emp in ViewBag.Employees as List<Productivity_Analytics.Models.Employee>)
-        {
-            if (Model?.ProjectEmployees?.Any(pe => pe.EmployeeId == emp.Id) == true)
-            {
-                <option value="@emp.Id" selected="selected">@emp.Name</option>
-            }
-            else
-            {
-                <option value="@emp.Id">@emp.Name</option>
-            }
-        }
-    </select>
-</div>
+            </div>
 
             <div class="mb-3">
-                <label class="form-label">Project Rating</label>
-                <select name="ProjectRating" class="form-select">
-                    @if (string.IsNullOrEmpty(Model?.ProjectRating))
+                <label class="form-label">Departments</label>
+                <select name="DepartmentIds" class="form-select" multiple>
+                    @foreach (var dept in ViewBag.Departments as List<Productivity_Analytics.Models.Department>)
                     {
-                        <option value="" selected>No Rating</option>
+                        if (Model?.ProjectDepartments?.Any(pd => pd.DepartmentId == dept.DepartmentId) == true)
+                        {
+                            <option value="@dept.DepartmentId" selected="selected">@dept.DepartmentName</option>
+                        }
+                        else
+                        {
+                            <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                        }
                     }
-                    else
-                    {
-                        <option value="">No Rating</option>
-                    }
+                </select>
+                <small class="form-text text-muted">Hold CTRL to select multiple</small>
+            </div>
 
-                    @if (Model?.ProjectRating == "Excellent")
+            <div class="mb-3">
+                <label class="form-label">Employees</label>
+                <select name="EmployeeIds" class="form-select" multiple>
+                    @foreach (var emp in ViewBag.Employees as List<Productivity_Analytics.Models.Employee>)
                     {
-                        <option value="Excellent" selected>Excellent</option>
-                    }
-                    else
-                    {
-                        <option value="Excellent">Excellent</option>
-                    }
-
-                    @if (Model?.ProjectRating == "Very Good")
-                    {
-                        <option value="Very Good" selected>Very Good</option>
-                    }
-                    else
-                    {
-                        <option value="Very Good">Very Good</option>
-                    }
-
-                    @if (Model?.ProjectRating == "Good")
-                    {
-                        <option value="Good" selected>Good</option>
-                    }
-                    else
-                    {
-                        <option value="Good">Good</option>
-                    }
-
-                    @if (Model?.ProjectRating == "Needs Improvement")
-                    {
-                        <option value="Needs Improvement" selected>Needs Improvement</option>
-                    }
-                    else
-                    {
-                        <option value="Needs Improvement">Needs Improvement</option>
-                    }
-
-                    @if (Model?.ProjectRating == "Poor")
-                    {
-                        <option value="Poor" selected>Poor</option>
-                    }
-                    else
-                    {
-                        <option value="Poor">Poor</option>
+                        if (Model?.ProjectEmployees?.Any(pe => pe.EmployeeId == emp.Id) == true)
+                        {
+                            <option value="@emp.Id" selected="selected">@emp.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@emp.Id">@emp.Name</option>
+                        }
                     }
                 </select>
             </div>
 
+
             <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" name="IsComplete"
-                       value="true" @(Model?.IsComplete == true ? "checked=\"checked\"" : "") />
-                <label class="form-check-label">Completed</label>
+                <input type="checkbox" class="form-check-input" name="IsApproved" value="true" />
+                <label class="form-check-label">Approved</label>
             </div>
+
+            <button type="submit" class="btn btn-success float-end">
+                <i class="fas fa-save"></i> Add Project
+            </button>
         </form>
     </div>
 </div>
-<!-- Employees inside project -->
-@if (Model != null && Model.ProjectId > 0)
-{
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-users me-1"></i>
-            Employees in @Model.ProjectName
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Employee Rating</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.ProjectEmployees != null && Model.ProjectEmployees.Any())
-                    {
-                        foreach (var pe in Model.ProjectEmployees)
-                        {
-                            <tr>
-                                <td>@pe.Employee?.Name</td>
-                                <td>@pe.Employee?.Department?.DepartmentName</td>
-                                <td>@(pe.EmployeeRating ?? "No Rating")</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="3">No employees in this project.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+
+<!-- Edit Project Modal -->
+<div class="modal fade" id="editProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="UpdateProject" asp-controller="Dashboard" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="editProjectId" name="ProjectId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Project Name</label>
+                        <input type="text" id="editProjectName" name="ProjectName" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" id="editStartDate" name="StartDate" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" id="editDueDate" name="DueDate" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Project Rating</label>
+                        <select id="editProjectRating" name="ProjectRating" class="form-select">
+                            <option value="">No Rating</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Very Good">Very Good</option>
+                            <option value="Good">Good</option>
+                            <option value="Needs Improvement">Needs Improvement</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="editIsComplete" name="IsComplete" value="true" />
+                        <label class="form-check-label">Completed</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-between">
+                    <div>
+                        <!-- Delete Button -->
+                        <form asp-action="DeleteProject" asp-controller="Dashboard" method="post" class="d-inline">
+                            <input type="hidden" id="deleteProjectId" name="ProjectId" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+
+                        <!-- Archive Button -->
+                        <form asp-action="ArchiveProject" asp-controller="Dashboard" method="post" class="d-inline">
+                            <input type="hidden" id="archiveProjectId" name="ProjectId" />
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-archive"></i> Archive
+                            </button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Changes</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-}
+</div>
+
+<!-- Scripts -->
+<script>
+    function showProjectForm() {
+        document.getElementById("projectTableSection").style.display = "none";
+        document.getElementById("projectFormSection").style.display = "block";
+    }
+
+    function showProjectTable() {
+        document.getElementById("projectFormSection").style.display = "none";
+        document.getElementById("projectTableSection").style.display = "block";
+    }
+
+    function openEditModal(projectId) {
+        fetch(`/Dashboard/GetProject?id=${projectId}`)
+            .then(res => res.json())
+            .then(project => {
+                document.getElementById("editProjectId").value = project.projectId;
+                document.getElementById("editProjectName").value = project.projectName;
+                document.getElementById("editStartDate").value = project.startDate.split('T')[0];
+                document.getElementById("editDueDate").value = project.dueDate.split('T')[0];
+                document.getElementById("editProjectRating").value = project.projectRating || "";
+                document.getElementById("editIsComplete").checked = project.isComplete;
+
+                var modal = new bootstrap.Modal(document.getElementById('editProjectModal'));
+                modal.show();
+            });
+    }
+</script>
