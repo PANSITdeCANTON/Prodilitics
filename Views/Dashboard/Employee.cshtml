@@ -1,7 +1,27 @@
 ﻿@model IEnumerable<Productivity_Analytics.Models.Employee>
+@using Productivity_Analytics.Models  @* <--- ADDED *@
 @{
     ViewData["Title"] = "Employee";
     Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+
+    // =================== C# RATING CONVERTER (ADDED) ===================
+    // This is the same converter used in other views
+    string GetRatingString(decimal? rating)
+    {
+        if (!rating.HasValue) return "No Rating";
+
+        return rating.Value switch
+        {
+            5m => "Excellent (5)",
+            4m => "Very Good (4)",
+            3m => "Good (3)",
+            2m => "Needs Improvement (2)",
+            1m => "Need Training (1)",
+            0m => "Firable (0)",
+            _ => rating.Value.ToString("0.0") // Fallback for decimals like 3.5
+        };
+    }
+    // ===================================================================
 }
 
 <h1 class="mt-4">Employee</h1>
@@ -42,7 +62,10 @@
                             <td>@emp.YearsOfExperience</td>
                             <td>@emp.EducationLevel</td>
                             <td>@(emp.Department?.DepartmentName ?? "No Department")</td>
-                            <td>@(emp.Rating ?? "No Rating")</td>
+
+                            @* FIX: Call the GetRatingString converter here *@
+                            <td>@GetRatingString(emp.Rating)</td>
+
                         </tr>
                     }
                 }
@@ -57,7 +80,6 @@
     </div>
 </div>
 
-<!-- Add Employee Modal -->
 <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

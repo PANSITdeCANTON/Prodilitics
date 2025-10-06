@@ -47,7 +47,7 @@
                             <td>@emp.Age</td>
                             <td>@emp.YearsOfExperience</td>
                             <td>@emp.EducationLevel</td>
-                            <td>@(emp.Rating ?? "No Rating")</td>
+                            <td>@(emp.Rating.HasValue? emp.Rating.Value.ToString("0.0") : "No Rating")</td>
                         </tr>
                     }
                 }

@@ -1,4 +1,109 @@
-﻿@{
-    ViewData["Title"] = "Charts";
+﻿@model IEnumerable<Productivity_Analytics.Models.Project>
+@using Productivity_Analytics.Models
+@{
+    ViewData["Title"] = "Archived Projects";
     Layout = "~/Views/Shared/_layout-sidenav-light.cshtml";
+
+    // =================== C# RATING CONVERTER (Added to fix CS1503 error) ===================
+    string GetRatingString(decimal? rating)
+    {
+        // This is a direct copy of the converter from Project.cshtml
+        if (!rating.HasValue) return "No Rating";
+
+        return rating.Value switch
+        {
+            5m => "Excellent (5)",
+            4m => "Very Good (4)",
+            3m => "Good (3)",
+            2m => "Needs Improvement (2)",
+            1m => "Need Training (1)",
+            0m => "Firable (0)",
+            _ => rating.Value.ToString("0.0") // Fallback for decimals like 3.5
+        };
+    }
+    // =======================================================================================
 }
+
+<div class="card mb-4 shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-archive me-1"></i>
+            Archived Projects
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Project Name</th>
+                    <th>Departments</th>
+                    <th>Employees Involved</th>
+                    <th>Start Date</th>
+                    <th>Due Date</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var project in Model)
+                    {
+                        <tr>
+                            <td>@project.ProjectName</td>
+
+                            <td>
+                                @if (project.ProjectDepartments != null && project.ProjectDepartments.Any())
+                                {
+                                    foreach (var pd in project.ProjectDepartments)
+                                    {
+                                        <span class="badge bg-secondary text-white me-1">@pd.Department?.DepartmentName</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">None</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (project.ProjectEmployees != null && project.ProjectEmployees.Any())
+                                {
+                                    foreach (var pe in project.ProjectEmployees)
+                                    {
+                                        <div class="mb-1">
+                                            <span class="badge bg-light text-dark border me-1">@pe.Employee?.Name</span>
+                                            <span class="text-muted small">(@GetRatingString(pe.EmployeeRating))</span>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">None</span>
+                                }
+                            </td>
+
+                            <td>@project.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@project.DueDate.ToString("yyyy-MM-dd")</td>
+
+                            <td>@GetRatingString(project.ProjectRating)</td>
+
+                            <td>
+                                <span class="badge rounded-pill px-3 py-2" style="background-color:#8f7a00; color:white;">
+                                    @(project.IsComplete ? "Completed" : "Ongoing")
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-muted">No archived projects found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

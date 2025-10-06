@@ -1,6 +1,26 @@
 ﻿@model IEnumerable<Productivity_Analytics.Models.Employee>
+@using Productivity_Analytics.Models
 @{
     Layout = "_DashboardLayout";
+
+    // =================== C# RATING CONVERTER ===================
+    // This is the same converter used in the Project and Archived views
+    string GetRatingString(decimal? rating)
+    {
+        if (!rating.HasValue) return "No Rating";
+
+        return rating.Value switch
+        {
+            5m => "Excellent (5)",
+            4m => "Very Good (4)",
+            3m => "Good (3)",
+            2m => "Needs Improvement (2)",
+            1m => "Need Training (1)",
+            0m => "Firable (0)",
+            _ => rating.Value.ToString("0.0") // Fallback for decimals like 3.5
+        };
+    }
+    // ==========================================================
 }
 
 <h1 class="mt-4">Dashboard</h1>
@@ -12,7 +32,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-chart-area me-1"></i>
-                Employee Area Chart 
+                Employee Area Chart
             </div>
             <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
         </div>
@@ -21,7 +41,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-chart-bar me-1"></i>
-                Project Bar Chart 
+                Project Bar Chart
             </div>
             <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
         </div>
@@ -54,7 +74,11 @@
                             <td>@emp.YearsOfExperience</td>
                             <td>@emp.EducationLevel</td>
                             <td>@(emp.Department?.DepartmentName ?? "No Department")</td>
-                            <td>@(emp.Rating ?? "No Rating")</td>
+
+                            @* FIX: Use the new converter function to display rating as a string *@
+                            <td>@GetRatingString(emp.Rating)</td>
+
+
                         </tr>
                     }
                 }
